@@ -1,0 +1,5 @@
+<resources>
+
+  <integer name="grid_layout_span">4</integer>
+
+</resources>
