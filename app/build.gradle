@@ -3,52 +3,51 @@ apply plugin: 'com.android.application'
 def support = "23.1.1"
 
 ext {
-  themoviedb_api_key="$api_key"
+    themoviedb_api_key = "$api_key"
 }
 
 android {
-  compileSdkVersion 23
-  buildToolsVersion "23.0.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
-  defaultConfig {
-    applicationId "com.vans.movies"
-    minSdkVersion 14
-    targetSdkVersion 23
-    versionCode 1
-    versionName "1.0"
-  }
-  buildTypes {
-    debug {
-      buildConfigField "String", "API_KEY", "\"$themoviedb_api_key\""
+    defaultConfig {
+        applicationId "com.vans.movies"
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
     }
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    buildTypes {
+        debug {
+            buildConfigField "String", "API_KEY", "\"$themoviedb_api_key\""
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-      buildConfigField "String", "API_KEY", "\"$themoviedb_api_key\""
+            buildConfigField "String", "API_KEY", "\"$themoviedb_api_key\""
+        }
     }
-  }
 }
 
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
-  testCompile 'junit:junit:4.12'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
 
-  //DESIGN
-  compile "com.android.support:appcompat-v7:$support"
-  compile "com.android.support:design:$support"
-  compile "com.android.support:cardview-v7:$support"
-  compile "com.android.support:recyclerview-v7:$support"
-  compile 'com.squareup.picasso:picasso:2.5.2'
+    //DESIGN
+    compile "com.android.support:appcompat-v7:$support"
+    compile "com.android.support:design:$support"
+    compile "com.android.support:cardview-v7:$support"
+    compile "com.android.support:recyclerview-v7:$support"
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
-  // DATA
-  compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
-  compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
-  compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
-  compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
-  compile 'com.squareup.okhttp3:okhttp-urlconnection:3.0.0-RC1'
+    // DATA
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
+    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+    compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.0.0-RC1'
 
-
-  // RX
-  compile 'io.reactivex:rxandroid:1.1.0'
+    // RX
+    compile 'io.reactivex:rxandroid:1.1.0'
 }

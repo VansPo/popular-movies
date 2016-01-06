@@ -4,19 +4,20 @@ import com.vans.movies.data.DataSourceImpl;
 
 public class Global {
 
-  public static final String POPULARITY_DESC = "popularity.desc";
-  public static final String VOTE_DESC = "vote_average.desc";
+    public static final String POPULARITY_DESC = "popularity.desc";
+    public static final String VOTE_DESC = "vote_average.desc";
 
-  public DataSourceImpl api = new DataSourceImpl();
+    public DataSourceImpl api = new DataSourceImpl();
 
-  private static Global INSTANCE;
-  private Global() { }
+    private static Global INSTANCE;
 
-  public static Global get() {
-    if (INSTANCE == null) INSTANCE = new Global();
-    return INSTANCE;
-  }
+    private Global() {
+    }
 
+    public static Global get() {
+        if (INSTANCE == null) INSTANCE = new Global();
+        return INSTANCE;
+    }
 
 
 }

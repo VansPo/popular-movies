@@ -1,4 +1,4 @@
 <resources>
-  <string name="app_name">Popular Movies</string>
-  <string name="action_sort">Sort by</string>
+    <string name="app_name">Popular Movies</string>
+    <string name="action_sort">Sort by</string>
 </resources>
