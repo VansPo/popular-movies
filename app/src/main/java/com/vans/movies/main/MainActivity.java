@@ -85,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
     hideError();
   }
 
-  @Override protected void onPause() {
-    super.onPause();
+  @Override protected void onDestroy() {
+    super.onDestroy();
     //fixme
     presenter.destroy();
   }
