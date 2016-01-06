@@ -1,11 +1,14 @@
 package com.vans.movies.main.adapter;
 
 import android.content.Context;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.vans.movies.R;
@@ -29,7 +32,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
   @Override public void onBindViewHolder(ViewHolder holder, int position) {
     final Movie item = items.get(position);
-    holder.text.setText(item.title);
+    //todo display year correctly
+    String year = "(" + item.releaseDate.split("-")[0] + ")";
+    holder.text.setText(item.title + " " + year);
+
+    holder.rating.setRating((float) item.voteAverage / 2);
     String path = item.getPosterPath("http://image.tmdb.org/t/p/", "w185/");
     Picasso.with(context)
         .load(path)
@@ -51,12 +58,14 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     View root;
     ImageView image;
     TextView text;
+    RatingBar rating;
 
     public ViewHolder(View itemView) {
       super(itemView);
       root = itemView;
       image = (ImageView) itemView.findViewById(R.id.image);
       text = (TextView) itemView.findViewById(R.id.title);
+      rating = (RatingBar) itemView.findViewById(R.id.rating);
     }
   }
 
@@ -65,4 +74,39 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     items.addAll(data);
     notifyDataSetChanged();
   }
+
+  private void setStringAfterEllipsis(TextView textView, String original, String customEllipsis, int maxLines){
+
+    if(textView.getLayout().getEllipsisCount(maxLines-1)==0) {
+      return; // Nothing to do
+    }
+
+    int start = textView.getLayout().getLineStart(0);
+    int end = textView.getLayout().getLineEnd(textView.getLineCount() - 1);
+    String displayed = textView.getText().toString().substring(start, end);
+    int displayedWidth = getTextWidth(displayed, textView.getTextSize());
+
+    String suffix = "\u2026" + customEllipsis;
+
+    int textWidth;
+    String newText = original;
+    textWidth = getTextWidth(newText + suffix, textView.getTextSize());
+
+    while(textWidth>displayedWidth){
+      newText = newText.substring(0, newText.length()-1).trim();
+      textWidth = getTextWidth(newText + suffix, textView.getTextSize());
+    }
+
+    textView.setText(newText + suffix);
+  }
+
+  private int getTextWidth(String text, float textSize){
+    Rect bounds = new Rect();
+    Paint paint = new Paint();
+    paint.setTextSize(textSize);
+    paint.getTextBounds(text, 0, text.length(), bounds);
+
+    return (int) Math.ceil( bounds.width());
+  }
+
 }
