@@ -79,7 +79,7 @@ public class DetailsActivity extends AppCompatActivity {
         title.setText(title.getText() + " " + data.originalTitle);
         language.setText(language.getText() + " " + data.originalLanguage);
         releaseDate.setText(releaseDate.getText() + " " + data.releaseDate);
-        rating.setText(rating.getText() + " " + String.valueOf(data.voteAverage) + " (" + data.voteCount + ")");
+        rating.setText(rating.getText() + " " + String.valueOf(data.voteAverage) + "/10" + " (" + data.voteCount + ")");
         description.setText(data.overview);
         Picasso.with(this)
                 .load(data.getSmallPosterPath())
