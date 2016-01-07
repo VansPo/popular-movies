@@ -7,13 +7,32 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="movies.myapplication.ScrollingActivity"
     tools:showIn="@layout/activity_details"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:elevation="4dp">
 
-    <TextView
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="123" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Title"
+            android:textAllCaps="true"
+            android:padding="16dp"
+            android:text="Overview"/>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:text="123" />
+
+    </LinearLayout>
+
+
 
 </android.support.v4.widget.NestedScrollView>

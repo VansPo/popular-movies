@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Popular Movies</string>
     <string name="action_sort">Sort by</string>
+    <string name="original_title">Original title:</string>
+    <string name="original_language">Language:</string>
+    <string name="release_date">Release date:</string>
+    <string name="user_rating">Rating:</string>
 </resources>
