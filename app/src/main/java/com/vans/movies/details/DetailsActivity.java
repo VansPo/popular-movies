@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.vans.movies.R;
+import com.vans.movies.details.reviews.ReviewsActivity;
 import com.vans.movies.entity.Movie;
 import com.vans.movies.entity.Trailer;
 
@@ -40,6 +41,7 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView rating;
     private ProgressBar trailersPb;
     private ViewGroup trailersContainer;
+    private ViewGroup reviews;
 
     private Toolbar toolbar;
 
@@ -77,6 +79,7 @@ public class DetailsActivity extends AppCompatActivity {
         rating = (TextView) findViewById(R.id.rating);
         trailersPb = (ProgressBar) findViewById(R.id.trailers_pb);
         trailersContainer = (ViewGroup) findViewById(R.id.trailers_container);
+        reviews = (ViewGroup) findViewById(R.id.reviews_layout);
 
         ViewCompat.setTransitionName(image, VIEW_NAME_HEADER_IMAGE);
 
@@ -87,8 +90,7 @@ public class DetailsActivity extends AppCompatActivity {
         presenter.init();
     }
 
-    public void setData(@NonNull Movie data) {
-        //todo
+    public void setData(@NonNull final Movie data) {
         hackTitle(data.title);
         title.setText(title.getText() + " " + data.originalTitle);
         language.setText(language.getText() + " " + data.originalLanguage);
@@ -105,6 +107,13 @@ public class DetailsActivity extends AppCompatActivity {
                 .load(data.getMediumBackdropPath())
                 .error(android.R.color.transparent)
                 .into(backgroundImage);
+
+        reviews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(ReviewsActivity.create(DetailsActivity.this, String.valueOf(data.id)));
+            }
+        });
     }
 
     public void showTrailers(List<Trailer> trailers) {
@@ -124,7 +133,7 @@ public class DetailsActivity extends AppCompatActivity {
         int itemId = item.getItemId();
         switch (itemId) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);

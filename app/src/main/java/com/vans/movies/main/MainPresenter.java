@@ -36,6 +36,7 @@ public class MainPresenter {
 
     private final int DEFAULT_PAGE = 1;
     private int page = DEFAULT_PAGE;
+    private int totalPages = DEFAULT_PAGE;
 
     public MainPresenter(MainActivity activity) {
         view = activity;
@@ -48,7 +49,28 @@ public class MainPresenter {
         //that's why lambdas matter
         subscription.add(
                 Observable.combineLatest(
-                        paginationSubject.startWith(0),
+                        paginationSubject
+                                .debounce(200, TimeUnit.MILLISECONDS)
+                                .zipWith(
+                                        notificationSubject.filter(new Func1<ViewNotification, Boolean>() {
+                                            @Override
+                                            public Boolean call(ViewNotification viewNotification) {
+                                                return viewNotification.state == State.CONTENT || viewNotification.state == State.ERROR;
+                                            }
+                                        }),
+                                        new Func2<Object, ViewNotification, Object>() {
+                                            @Override
+                                            public Object call(Object o, ViewNotification viewNotification) {
+                                                return null;
+                                            }
+                                        })
+                                .filter(new Func1<Object, Boolean>() {
+                                    @Override
+                                    public Boolean call(Object o) {
+                                        return page <= totalPages;
+                                    }
+                                })
+                                .startWith(0),
                         Observable.combineLatest(
                                 sortSubject.distinctUntilChanged(),
                                 refreshSubject.startWith(0),
@@ -100,11 +122,13 @@ public class MainPresenter {
                             @Override
                             public void onNext(ListResponse<Movie> data) {
                                 if (data.results != null) {
+                                    totalPages = data.totalPages;
                                     Log.i("movies", "setData: " + data.results.size());
                                     if (data.page == DEFAULT_PAGE)
                                         view.clearData();
                                     view.setData(data.results);
                                     notificationSubject.onNext(new ViewNotification(data, State.CONTENT));
+                                    page++;
                                 }
                             }
                         })
@@ -140,7 +164,7 @@ public class MainPresenter {
     }
 
     public void nextPage() {
-        page++;
+//        page++;
         paginationSubject.onNext(0);
     }
 

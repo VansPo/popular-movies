@@ -23,6 +23,10 @@ public interface DataSource {
     Observable<ListResponse<Trailer>> getTrailers(@Path("id") String id, @Query("api_key") String key);
 
     @GET("movie/{id}/reviews")
-    Observable<ListResponse<Review>> getReviews(@Path("id") String id, @Query("api_key") String key);
+    Observable<ListResponse<Review>> getReviews(
+            @Path("id") String id,
+            @Query("page") int page,
+            @Query("api_key") String key
+    );
 
 }

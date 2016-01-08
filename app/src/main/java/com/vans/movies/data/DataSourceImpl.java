@@ -36,8 +36,8 @@ public class DataSourceImpl {
         return source.getTrailers(id, BuildConfig.API_KEY);
     }
 
-    public Observable<ListResponse<Review>> getReviews(String id) {
-        return source.getReviews(id, BuildConfig.API_KEY);
+    public Observable<ListResponse<Review>> getReviews(String id, int page) {
+        return source.getReviews(id, page, BuildConfig.API_KEY);
     }
 
 }

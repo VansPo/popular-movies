@@ -1,64 +1,69 @@
-package com.vans.movies.main;
+package com.vans.movies.details.reviews;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
-import com.vans.movies.Global;
 import com.vans.movies.R;
-import com.vans.movies.entity.Movie;
-import com.vans.movies.main.adapter.MoviesAdapter;
+import com.vans.movies.entity.Review;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class ReviewsActivity extends AppCompatActivity {
 
-    private MainPresenter presenter;
+    private ReviewsPresenter presenter;
     private RecyclerView recycler;
     private SwipeRefreshLayout swipeLayout;
     private Snackbar snackbar;
 
-    private MoviesAdapter adapter;
+    private ReviewsAdapter adapter;
+
+    public static Intent create(Context context, String id) {
+        Intent intent = new Intent(context, ReviewsActivity.class);
+        intent.putExtra("id", id);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_reviews);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        setTitle("Reviews");
+        getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        overridePendingTransition(R.anim.slide_in, R.anim.slide_out);
 
         recycler = (RecyclerView) findViewById(R.id.recycler);
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
 
         initView();
 
-        presenter = new MainPresenter(this);
+        String id = getIntent().getStringExtra("id");
+        presenter = new ReviewsPresenter(this, id);
         presenter.init();
     }
 
     private void initView() {
-        adapter = new MoviesAdapter(this);
+        adapter = new ReviewsAdapter(this);
         recycler.setAdapter(adapter);
         recycler.setItemAnimator(new DefaultItemAnimator());
-        recycler.setLayoutManager(
-                new GridLayoutManager(this, getResources().getInteger(R.integer.grid_layout_span)));
+        recycler.setLayoutManager(new LinearLayoutManager(this));
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                presenter.getMovies();
+                presenter.getReviews();
             }
         });
 
@@ -68,14 +73,14 @@ public class MainActivity extends AppCompatActivity {
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
                 if (((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition()
-                        >= (recyclerView.getAdapter().getItemCount() - 2)) {
+                        >= (recyclerView.getAdapter().getItemCount() - 1)) {
                     presenter.nextPage();
                 }
             }
         });
     }
 
-    public void setData(List<Movie> data) {
+    public void setData(List<Review> data) {
         showProgress(false);
         adapter.add(data);
     }
@@ -87,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     public void showError() {
         showProgress(false);
         if (snackbar == null || !snackbar.isShown()) {
-            snackbar = Snackbar.make(recycler, "Couldn't get movies list", Snackbar.LENGTH_INDEFINITE);
+            snackbar = Snackbar.make(recycler, "Couldn't get reviews", Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction("Retry", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -117,40 +122,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuItem item = menu.findItem(R.id.spinner);
-        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
-        ArrayAdapter<String> spinnerArrayAdapter =
-                new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.order));
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(spinnerArrayAdapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        presenter.setSort(Global.POPULARITY_DESC);
-                        break;
-                    case 1:
-                        presenter.setSort(Global.VOTE_DESC);
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        return true;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId = item.getItemId();
+        switch (itemId) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.spinner) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public void onBackPressed() {
+        super.onBackPressed();
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 }
