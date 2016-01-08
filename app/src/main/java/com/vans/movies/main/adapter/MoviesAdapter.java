@@ -32,7 +32,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.movie_item, parent, false));
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.movie_item, parent, false), true);
     }
 
     @Override
@@ -72,17 +72,29 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
         TextView text;
         RatingBar rating;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, boolean isItem) {
             super(itemView);
-            root = itemView;
-            image = (ImageView) itemView.findViewById(R.id.image);
-            text = (TextView) itemView.findViewById(R.id.title);
-            rating = (RatingBar) itemView.findViewById(R.id.rating);
+            if (isItem) {
+                root = itemView;
+                image = (ImageView) itemView.findViewById(R.id.image);
+                text = (TextView) itemView.findViewById(R.id.title);
+                rating = (RatingBar) itemView.findViewById(R.id.rating);
+            }
         }
     }
 
     public void replace(List<Movie> data) {
         items.clear();
+        items.addAll(data);
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
+    public void add(List<Movie> data) {
         items.addAll(data);
         notifyDataSetChanged();
     }

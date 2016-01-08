@@ -25,9 +25,11 @@
         </activity>
 
         <activity android:name=".details.DetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"/>
 
-        </activity>
+        <activity android:name=".details.reviews.ReviewsActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
     </application>
 
 </manifest>

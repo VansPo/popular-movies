@@ -63,7 +63,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:paddingBottom="16dp"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp"
                 android:layout_below="@+id/trailers_header"
@@ -78,8 +77,11 @@
             android:background="@android:color/darker_gray" />
 
         <RelativeLayout
+            android:id="@+id/reviews_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true">
 
             <TextView
                 style="@style/TextAppearance.AppCompat.Title"

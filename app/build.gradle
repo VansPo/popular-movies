@@ -1,9 +1,15 @@
 apply plugin: 'com.android.application'
 
 def support = "23.1.1"
+def retrofit = "2.0.0-beta2"
+def okhttp = "3.0.0-RC1"
 
 ext {
     themoviedb_api_key = "$api_key"
+}
+
+repositories {
+    jcenter()
 }
 
 android {
@@ -42,11 +48,11 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     // DATA
-    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
-    compile 'com.squareup.retrofit:adapter-rxjava:2.0.0-beta2'
-    compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
-    compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
-    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.0.0-RC1'
+    compile "com.squareup.retrofit:retrofit:$retrofit"
+    compile "com.squareup.retrofit:adapter-rxjava:$retrofit"
+    compile "com.squareup.retrofit:converter-gson:$retrofit"
+    compile "com.squareup.okhttp3:okhttp:$okhttp"
+    compile "com.squareup.okhttp3:okhttp-urlconnection:$okhttp"
 
     // RX
     compile 'io.reactivex:rxandroid:1.1.0'

@@ -18,6 +18,7 @@ public class DataSourceImpl {
     private DataSource source;
 
     public DataSourceImpl() {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(endpoint)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -27,16 +28,16 @@ public class DataSourceImpl {
         source = retrofit.create(DataSource.class);
     }
 
-    public Observable<ListResponse<Movie>> getMovies(String sortBy) {
-        return source.getMovies(BuildConfig.API_KEY, sortBy);
+    public Observable<ListResponse<Movie>> getMovies(String sortBy, int page) {
+        return source.getMovies(BuildConfig.API_KEY, sortBy, page);
     }
 
     public Observable<ListResponse<Trailer>> getTrailers(String id) {
         return source.getTrailers(id, BuildConfig.API_KEY);
     }
 
-    public Observable<ListResponse<Review>> getReviews(String id) {
-        return source.getReviews(id, BuildConfig.API_KEY);
+    public Observable<ListResponse<Review>> getReviews(String id, int page) {
+        return source.getReviews(id, page, BuildConfig.API_KEY);
     }
 
 }
