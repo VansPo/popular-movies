@@ -5,6 +5,7 @@ import com.vans.movies.ViewNotification;
 import com.vans.movies.ViewNotification.State;
 import com.vans.movies.data.DataSourceImpl;
 import com.vans.movies.entity.ListResponse;
+import com.vans.movies.entity.Movie;
 
 import java.util.concurrent.TimeUnit;
 
@@ -54,21 +55,21 @@ public class MainPresenter {
                     }
                 })
                 .debounce(200, TimeUnit.MILLISECONDS)
-                .flatMap(new Func1<String, Observable<ListResponse>>() {
+                .flatMap(new Func1<String, Observable<ListResponse<Movie>>>() {
                     @Override
-                    public Observable<ListResponse> call(String s) {
-                        return api.getMovies(s).onErrorReturn(new Func1<Throwable, ListResponse>() {
+                    public Observable<ListResponse<Movie>> call(String s) {
+                        return api.getMovies(s).onErrorReturn(new Func1<Throwable, ListResponse<Movie>>() {
                             @Override
-                            public ListResponse call(Throwable throwable) {
+                            public ListResponse<Movie> call(Throwable throwable) {
                                 notificationSubject.onNext(new ViewNotification(throwable, State.ERROR));
-                                return new ListResponse();
+                                return new ListResponse<>();
                             }
                         }).subscribeOn(Schedulers.io());
                     }
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ListResponse>() {
+                .subscribe(new Subscriber<ListResponse<Movie>>() {
                     @Override
                     public void onCompleted() {
                     }
@@ -79,7 +80,7 @@ public class MainPresenter {
                     }
 
                     @Override
-                    public void onNext(ListResponse data) {
+                    public void onNext(ListResponse<Movie> data) {
                         if (data.results != null) {
                             view.setData(data.results);
                             notificationSubject.onNext(new ViewNotification(data, State.CONTENT));
