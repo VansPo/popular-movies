@@ -18,6 +18,7 @@ public class DataSourceImpl {
     private DataSource source;
 
     public DataSourceImpl() {
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(endpoint)
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

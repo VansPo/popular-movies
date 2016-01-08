@@ -7,6 +7,8 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-import com.marshalchen.ultimaterecyclerview.UltimateRecyclerView;
 import com.vans.movies.Global;
 import com.vans.movies.R;
 import com.vans.movies.entity.Movie;
@@ -26,7 +27,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private MainPresenter presenter;
-    private UltimateRecyclerView recycler;
+    private RecyclerView recycler;
     private SwipeRefreshLayout swipeLayout;
     private Snackbar snackbar;
 
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        recycler = (UltimateRecyclerView) findViewById(R.id.recycler);
+        recycler = (RecyclerView) findViewById(R.id.recycler);
         swipeLayout = (SwipeRefreshLayout) findViewById(R.id.refresh);
 
         initView();
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         adapter = new MoviesAdapter(this);
         recycler.setAdapter(adapter);
         recycler.setItemAnimator(new DefaultItemAnimator());
-        recycler.enableLoadmore();
         recycler.setLayoutManager(
                 new GridLayoutManager(this, getResources().getInteger(R.integer.grid_layout_span)));
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -62,12 +62,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        enableLoadMore();
-        recycler.setOnLoadMoreListener(new UltimateRecyclerView.OnLoadMoreListener() {
+        //pagination
+        recycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void loadMore(int itemsCount, final int maxLastVisiblePosition) {
-//                if (maxLastVisiblePosition >= itemsCount-2)
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (((LinearLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition()
+                    >= (recyclerView.getAdapter().getItemCount() - 2)) {
                     presenter.nextPage();
+                }
             }
         });
     }
@@ -79,14 +82,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void clearData() {
         adapter.clear();
-    }
-
-    public void enableLoadMore() {
-        recycler.reenableLoadmore(getLayoutInflater().inflate(R.layout.load_more_view, recycler, false));
-    }
-
-    public void disableLoadMore() {
-        recycler.disableLoadmore();
     }
 
     public void showError() {

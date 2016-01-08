@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.squareup.picasso.Picasso;
 import com.vans.movies.R;
 import com.vans.movies.details.DetailsActivity;
@@ -22,7 +21,7 @@ import com.vans.movies.entity.Movie;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoviesAdapter extends UltimateViewAdapter<MoviesAdapter.ViewHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
     private final Context context;
     private List<Movie> items = new ArrayList<>();
@@ -32,58 +31,38 @@ public class MoviesAdapter extends UltimateViewAdapter<MoviesAdapter.ViewHolder>
     }
 
     @Override
-    public ViewHolder getViewHolder(View view) {
-        return new ViewHolder(view, false);
-    }
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.movie_item, parent, false), true);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        if (items.size() > 0 && position < items.size()) {
-            final Movie item = items.get(position);
-            //todo display year correctly
-            String year = "(" + item.releaseDate.split("-")[0] + ")";
-            holder.text.setText(item.title + " " + year);
+        final Movie item = items.get(position);
+        //todo display year correctly
+        String year = "(" + item.releaseDate.split("-")[0] + ")";
+        holder.text.setText(item.title + " " + year);
 
-            holder.rating.setRating((float) item.voteAverage / 2);
-            String path = item.getPosterPath("http://image.tmdb.org/t/p/", "w185/");
-            Picasso.with(context)
-                    .load(path)
-                    .into(holder.image);
+        holder.rating.setRating((float) item.voteAverage / 2);
+        String path = item.getPosterPath("http://image.tmdb.org/t/p/", "w185/");
+        Picasso.with(context)
+                .load(path)
+                .into(holder.image);
 
-            holder.root.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        holder.root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 //                context.startActivity(DetailsActivity.create(context, item));
-                    DetailsActivity.startTransition(
-                            (Activity) context,
-                            DetailsActivity.create(context, item),
-                            new Pair<View, String>(holder.image, DetailsActivity.VIEW_NAME_HEADER_IMAGE));
-                }
-            });
-        }
+                DetailsActivity.startTransition(
+                        (Activity) context,
+                        DetailsActivity.create(context, item),
+                        new Pair<View, String>(holder.image, DetailsActivity.VIEW_NAME_HEADER_IMAGE));
+            }
+        });
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
-        return null;
-    }
-
-    @Override
-    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) { }
-
-    @Override
-    public int getAdapterItemCount() {
+    public int getItemCount() {
         return items.size();
-    }
-
-    @Override
-    public long generateHeaderId(int position) {
-        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

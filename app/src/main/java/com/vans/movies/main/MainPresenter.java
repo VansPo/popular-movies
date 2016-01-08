@@ -1,5 +1,7 @@
 package com.vans.movies.main;
 
+import android.util.Log;
+
 import com.vans.movies.Global;
 import com.vans.movies.ViewNotification;
 import com.vans.movies.ViewNotification.State;
@@ -97,10 +99,8 @@ public class MainPresenter {
 
                             @Override
                             public void onNext(ListResponse<Movie> data) {
-                                if (data.page == data.totalPages) {
-                                    view.disableLoadMore();
-                                }
                                 if (data.results != null) {
+                                    Log.i("movies", "setData: " + data.results.size());
                                     if (data.page == DEFAULT_PAGE)
                                         view.clearData();
                                     view.setData(data.results);
@@ -151,6 +151,5 @@ public class MainPresenter {
 
     private void resetPages() {
         page = DEFAULT_PAGE;
-        view.enableLoadMore();
     }
 }
