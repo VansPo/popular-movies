@@ -13,7 +13,11 @@ import rx.Observable;
 public interface DataSource {
 
     @GET("discover/movie")
-    Observable<ListResponse<Movie>> getMovies(@Query("api_key") String key, @Query("sort_by") String sortBy);
+    Observable<ListResponse<Movie>> getMovies(
+            @Query("api_key") String key,
+            @Query("sort_by") String sortBy,
+            @Query("page") int page
+    );
 
     @GET("movie/{id}/videos")
     Observable<ListResponse<Trailer>> getTrailers(@Path("id") String id, @Query("api_key") String key);

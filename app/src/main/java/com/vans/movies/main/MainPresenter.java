@@ -26,10 +26,14 @@ public class MainPresenter {
     private MainActivity view;
 
     private PublishSubject<Object> refreshSubject = PublishSubject.create();
+    private PublishSubject<Object> paginationSubject = PublishSubject.create();
     private BehaviorSubject<String> sortSubject = BehaviorSubject.create();
     private BehaviorSubject<ViewNotification> notificationSubject = BehaviorSubject.create();
 
     private CompositeSubscription subscription = new CompositeSubscription();
+
+    private final int DEFAULT_PAGE = 1;
+    private int page = DEFAULT_PAGE;
 
     public MainPresenter(MainActivity activity) {
         view = activity;
@@ -39,54 +43,72 @@ public class MainPresenter {
     public void init() {
         getMovies();
 
-        subscription.add(Observable.combineLatest(
-                sortSubject.distinctUntilChanged(),
-                refreshSubject.startWith(0),
-                new Func2<String, Object, String>() {
-                    @Override
-                    public String call(String s, Object o) {
-                        return s;
-                    }
-                })
-                .doOnNext(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        notificationSubject.onNext(new ViewNotification(s, State.PROGRESS));
-                    }
-                })
-                .debounce(200, TimeUnit.MILLISECONDS)
-                .flatMap(new Func1<String, Observable<ListResponse<Movie>>>() {
-                    @Override
-                    public Observable<ListResponse<Movie>> call(String s) {
-                        return api.getMovies(s).onErrorReturn(new Func1<Throwable, ListResponse<Movie>>() {
+        //that's why lambdas matter
+        subscription.add(
+                Observable.combineLatest(
+                        paginationSubject.startWith(0),
+                        Observable.combineLatest(
+                                sortSubject.distinctUntilChanged(),
+                                refreshSubject.startWith(0),
+                                new Func2<String, Object, String>() {
+                                    @Override
+                                    public String call(String s, Object o) {
+                                        return s;
+                                    }
+                                }
+                        )
+                                .doOnNext(new Action1<String>() {
+                                    @Override
+                                    public void call(String s) {
+                                        notificationSubject.onNext(new ViewNotification(s, State.PROGRESS));
+                                    }
+                                }),
+                        new Func2<Object, String, String>() {
                             @Override
-                            public ListResponse<Movie> call(Throwable throwable) {
-                                notificationSubject.onNext(new ViewNotification(throwable, State.ERROR));
-                                return new ListResponse<>();
+                            public String call(Object o, String s) {
+                                return s;
                             }
-                        }).subscribeOn(Schedulers.io());
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ListResponse<Movie>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        notificationSubject.onNext(new ViewNotification(e, State.ERROR));
-                    }
-
-                    @Override
-                    public void onNext(ListResponse<Movie> data) {
-                        if (data.results != null) {
-                            view.setData(data.results);
-                            notificationSubject.onNext(new ViewNotification(data, State.CONTENT));
                         }
-                    }
-                }));
+                )
+                        .debounce(200, TimeUnit.MILLISECONDS)
+                        .flatMap(new Func1<String, Observable<ListResponse<Movie>>>() {
+                            @Override
+                            public Observable<ListResponse<Movie>> call(String s) {
+                                return api.getMovies(s, page).onErrorReturn(new Func1<Throwable, ListResponse<Movie>>() {
+                                    @Override
+                                    public ListResponse<Movie> call(Throwable throwable) {
+                                        notificationSubject.onNext(new ViewNotification(throwable, State.ERROR));
+                                        return new ListResponse<>();
+                                    }
+                                }).subscribeOn(Schedulers.io());
+                            }
+                        })
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<ListResponse<Movie>>() {
+                            @Override
+                            public void onCompleted() {
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                notificationSubject.onNext(new ViewNotification(e, State.ERROR));
+                            }
+
+                            @Override
+                            public void onNext(ListResponse<Movie> data) {
+                                if (data.page == data.totalPages) {
+                                    view.disableLoadMore();
+                                }
+                                if (data.results != null) {
+                                    if (data.page == DEFAULT_PAGE)
+                                        view.clearData();
+                                    view.setData(data.results);
+                                    notificationSubject.onNext(new ViewNotification(data, State.CONTENT));
+                                }
+                            }
+                        })
+        );
 
         subscription.add(notificationSubject.subscribeOn(Schedulers.io())
                 .debounce(200, TimeUnit.MILLISECONDS)
@@ -113,10 +135,22 @@ public class MainPresenter {
     }
 
     public void getMovies() {
+        resetPages();
         refreshSubject.onNext(0);
     }
 
+    public void nextPage() {
+        page++;
+        paginationSubject.onNext(0);
+    }
+
     public void setSort(String sortBy) {
+        resetPages();
         sortSubject.onNext(sortBy);
+    }
+
+    private void resetPages() {
+        page = DEFAULT_PAGE;
+        view.enableLoadMore();
     }
 }

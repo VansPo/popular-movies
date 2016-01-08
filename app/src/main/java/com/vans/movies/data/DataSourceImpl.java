@@ -27,8 +27,8 @@ public class DataSourceImpl {
         source = retrofit.create(DataSource.class);
     }
 
-    public Observable<ListResponse<Movie>> getMovies(String sortBy) {
-        return source.getMovies(BuildConfig.API_KEY, sortBy);
+    public Observable<ListResponse<Movie>> getMovies(String sortBy, int page) {
+        return source.getMovies(BuildConfig.API_KEY, sortBy, page);
     }
 
     public Observable<ListResponse<Trailer>> getTrailers(String id) {
