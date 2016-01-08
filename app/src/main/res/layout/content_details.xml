@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:elevation="4dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="movies.myapplication.ScrollingActivity"
-    tools:showIn="@layout/activity_details"
-    android:background="@android:color/white"
-    android:elevation="4dp">
+    tools:showIn="@layout/activity_details">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,23 +16,100 @@
         android:orientation="vertical">
 
         <TextView
+            style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/TextAppearance.AppCompat.Title"
-            android:textAllCaps="true"
             android:padding="16dp"
-            android:text="Overview"/>
+            android:text="Overview"
+            android:textAllCaps="true" />
 
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:text="123" />
 
-    </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@android:color/darker_gray" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/trailers_header"
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Trailers"
+                android:textAllCaps="true" />
+
+            <ProgressBar
+                android:id="@+id/trailers_pb"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="16dp"/>
+
+            <LinearLayout
+                android:id="@+id/trailers_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="16dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                android:layout_below="@+id/trailers_header"
+                android:visibility="gone">
+
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@android:color/darker_gray" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/TextAppearance.AppCompat.Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Reviews"
+                android:textAllCaps="true" />
+
+            <ImageView
+                android:id="@+id/reviews_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:padding="16dp"
+                android:src="@drawable/ic_chevron_right_24dp" />
+
+            <TextView
+                android:id="@+id/reviews_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/reviews_arrow"
+                android:textColor="@color/light_gray" />
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
 
 
 </android.support.v4.widget.NestedScrollView>

@@ -15,12 +15,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.vans.movies.R;
 import com.vans.movies.entity.Movie;
+import com.vans.movies.entity.Trailer;
+
+import java.util.List;
 
 public class DetailsActivity extends AppCompatActivity {
 
@@ -33,8 +38,12 @@ public class DetailsActivity extends AppCompatActivity {
     private TextView language;
     private TextView releaseDate;
     private TextView rating;
+    private ProgressBar trailersPb;
+    private ViewGroup trailersContainer;
 
     private Toolbar toolbar;
+
+    private DetailsPresenter presenter;
 
     public static void startTransition(Activity activity, Intent intent, Pair<View, String>... pairs) {
         ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -66,11 +75,16 @@ public class DetailsActivity extends AppCompatActivity {
         language = (TextView) findViewById(R.id.language);
         releaseDate = (TextView) findViewById(R.id.release_date);
         rating = (TextView) findViewById(R.id.rating);
+        trailersPb = (ProgressBar) findViewById(R.id.trailers_pb);
+        trailersContainer = (ViewGroup) findViewById(R.id.trailers_container);
 
         ViewCompat.setTransitionName(image, VIEW_NAME_HEADER_IMAGE);
 
         Movie movie = getIntent().getParcelableExtra("data");
         setData(movie);
+
+        presenter = new DetailsPresenter(this, String.valueOf(movie.id));
+        presenter.init();
     }
 
     public void setData(@NonNull Movie data) {
@@ -84,12 +98,25 @@ public class DetailsActivity extends AppCompatActivity {
         Picasso.with(this)
                 .load(data.getSmallPosterPath())
                 .noFade()
+                .error(android.R.color.white)
                 .into(image);
 
         Picasso.with(this)
                 .load(data.getMediumBackdropPath())
-                .noFade()
+                .error(android.R.color.transparent)
                 .into(backgroundImage);
+    }
+
+    public void showTrailers(List<Trailer> trailers) {
+        trailersPb.setVisibility(View.GONE);
+        if (!trailers.isEmpty()) {
+            trailersContainer.removeAllViews();
+            trailersContainer.setVisibility(View.VISIBLE);
+
+            for (Trailer t : trailers) {
+                trailersContainer.addView(new TrailerItem(trailersContainer, t).view);
+            }
+        }
     }
 
     @Override
@@ -126,4 +153,9 @@ public class DetailsActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.destroy();
+    }
 }
