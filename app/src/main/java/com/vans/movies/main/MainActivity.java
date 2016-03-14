@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        adapter = new MoviesAdapter(this);
+        adapter = new MoviesAdapter(this, findViewById(R.id.item_detail_container) != null);
         recycler.setAdapter(adapter);
         recycler.setItemAnimator(new DefaultItemAnimator());
         recycler.setLayoutManager(

@@ -2,9 +2,12 @@ package com.vans.movies.main.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.v4.util.Pair;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +20,8 @@ import com.squareup.picasso.Picasso;
 import com.vans.movies.R;
 import com.vans.movies.details.DetailsActivity;
 import com.vans.movies.entity.Movie;
+import com.vans.movies.list.ItemDetailActivity;
+import com.vans.movies.list.ItemDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +29,12 @@ import java.util.List;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
     private final Context context;
+    private boolean twoPane;
     private List<Movie> items = new ArrayList<>();
 
-    public MoviesAdapter(Context ctx) {
+    public MoviesAdapter(Context ctx, boolean twoPane) {
         context = ctx;
+        this.twoPane = twoPane;
     }
 
     @Override
@@ -52,10 +59,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
             @Override
             public void onClick(View v) {
 //                context.startActivity(DetailsActivity.create(context, item));
-                DetailsActivity.startTransition(
-                        (Activity) context,
-                        DetailsActivity.create(context, item),
-                        new Pair<View, String>(holder.image, DetailsActivity.VIEW_NAME_HEADER_IMAGE));
+                if (twoPane) {
+//                    Bundle arguments = new Bundle();
+//                    arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+//                    ItemDetailFragment fragment = new ItemDetailFragment();
+//                    fragment.setArguments(arguments);
+//                    ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction()
+//                            .replace(R.id.item_detail_container, fragment)
+//                            .commit();
+                } else {
+                    DetailsActivity.startTransition(
+                            (Activity) context,
+                            DetailsActivity.create(context, item),
+                            new Pair<View, String>(holder.image, DetailsActivity.VIEW_NAME_HEADER_IMAGE));
+                }
             }
         });
     }
