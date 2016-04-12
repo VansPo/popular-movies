@@ -13,11 +13,11 @@ import rx.subscriptions.CompositeSubscription;
 public class DetailsPresenter {
 
     private final String id;
-    private final DetailsActivity view;
+    private final DetailsView view;
     private final DataSourceImpl api;
     private CompositeSubscription subscription = new CompositeSubscription();
 
-    public DetailsPresenter(DetailsActivity view, String movieId) {
+    public DetailsPresenter(DetailsView view, String movieId) {
         this.id = movieId;
         api = Global.get().api;
         this.view = view;

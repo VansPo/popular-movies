@@ -2,7 +2,6 @@ package com.vans.movies.main.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -19,9 +18,8 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 import com.vans.movies.R;
 import com.vans.movies.details.DetailsActivity;
+import com.vans.movies.details.DetailsFragment;
 import com.vans.movies.entity.Movie;
-import com.vans.movies.list.ItemDetailActivity;
-import com.vans.movies.list.ItemDetailFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,13 +58,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
             public void onClick(View v) {
 //                context.startActivity(DetailsActivity.create(context, item));
                 if (twoPane) {
-//                    Bundle arguments = new Bundle();
-//                    arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-//                    ItemDetailFragment fragment = new ItemDetailFragment();
-//                    fragment.setArguments(arguments);
-//                    ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction()
-//                            .replace(R.id.item_detail_container, fragment)
-//                            .commit();
+                    Bundle arguments = new Bundle();
+                    arguments.putParcelable(DetailsFragment.EXTRA_MOVIE, item);
+                    DetailsFragment fragment = new DetailsFragment();
+                    fragment.setArguments(arguments);
+                    ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.item_detail_container, fragment)
+                            .commit();
                 } else {
                     DetailsActivity.startTransition(
                             (Activity) context,
